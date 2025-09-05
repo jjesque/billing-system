@@ -1,0 +1,22 @@
+{
+  "client": {
+    "name": "John Doe",
+    "email": "john@example.com",
+    "address": "123 Main St, City, State 12345",
+    "phone": "+1-555-123-4567"
+  },
+  "invoice": {
+    "amount": 1500.0,
+    "currency": "USD",
+    "description": "Web Development Services",
+    "dueDate": "2024-02-15",
+    "items": [
+      {
+        "description": "Frontend Development",
+        "quantity": 40,
+        "rate": 25.0,
+        "amount": 1000.0
+      }
+    ]
+  }
+}

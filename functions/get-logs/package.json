@@ -1,0 +1,16 @@
+{
+  "name": "get-logs",
+  "version": "1.0.0",
+  "description": "Retrieve invoice operation logs",
+  "main": "src/main.js",
+  "scripts": {
+    "build": "npm install",
+    "start": "node src/main.js"
+  },
+  "dependencies": {
+    "node-appwrite": "^13.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

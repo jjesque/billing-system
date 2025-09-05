@@ -1,0 +1,43 @@
+{
+  "sourceSystem": "ExistingBillingSystem",
+  "sourceId": "PO-2025-0812-123",
+  "client": {
+    "name": "Acme Corp",
+    "email": "finance@acme.example",
+    "address": "123 Market St, City, Country",
+    "taxId": "TAX-987654"
+  },
+  "items": [
+    {
+      "description": "Development services",
+      "qty": 120,
+      "unitPrice": 30.5,
+      "taxCategory": "standard"
+    },
+    {
+      "description": "Server hosting",
+      "qty": 1,
+      "unitPrice": 200.0,
+      "taxCategory": "zero"
+    }
+  ],
+  "markups": [
+    {
+      "type": "percentage",
+      "value": 5
+    }
+  ],
+  "discounts": [
+    {
+      "type": "amount",
+      "value": 50.0
+    }
+  ],
+  "currency": "USD",
+  "dueDate": "2025-09-30",
+  "notes": "Thank you for your business",
+  "emailRecipients": ["finance@acme.example"],
+  "metadata": {
+    "projectCode": "ELIN-001"
+  }
+}

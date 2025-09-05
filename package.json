@@ -1,0 +1,28 @@
+{
+  "name": "billing-system",
+  "version": "1.0.0",
+  "description": "Automated Invoice Generator with Appwrite Backend",
+  "main": "index.js",
+  "scripts": {
+    "dev": "cd frontend && npm run dev",
+    "build": "cd frontend && npm run build",
+    "setup": "node scripts/setup-appwrite.js",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down"
+  },
+  "keywords": [
+    "billing",
+    "invoice",
+    "appwrite",
+    "react"
+  ],
+  "author": "Developer",
+  "license": "MIT",
+  "devDependencies": {
+    "node-appwrite": "^13.0.0"
+  },
+  "dependencies": {
+    "framer-motion": "^12.23.12",
+    "papaparse": "^5.5.3"
+  }
+}
