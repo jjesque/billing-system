@@ -250,20 +250,60 @@ async function savePDFToBucket(storage, pdfBuffer, filename, log) {
 module.exports = async ({ req, res, log, error }) => {
   try {
     log("Invoice function started")
-    const client = new Client().setEndpoint(process.env.APPWRITE_ENDPOINT).setProject(process.env.APPWRITE_PROJECT_ID).setKey(process.env.APPWRITE_API_KEY)
+    const client = new Client()
+      .setEndpoint(process.env.APPWRITE_ENDPOINT)
+      .setProject(process.env.APPWRITE_PROJECT_ID)
+      .setKey(process.env.APPWRITE_API_KEY)
+
     const storage = new Storage(client)
+    const databases = new Databases(client)
 
     const body = req.body ? JSON.parse(req.body) : {}
     if (!body || !body.client || !body.items) throw new Error("Missing required fields")
 
+    // Generate PDF
     log("Generating PDF...")
     const pdfBuffer = await generateInvoicePDF(body)
 
+    // Save PDF to Storage
     const filename = `invoice_${body.invoiceNumber || Date.now()}.pdf`
     const fileInfo = await savePDFToBucket(storage, pdfBuffer, filename, log)
 
+    // Calculate totals
+    const calculations = calculateInvoiceTotals(body)
+
+    // ==============================
+    // SAVE TO DATABASE
+    // ==============================
+    const databaseId = process.env.APPWRITE_DATABASE_ID
+    const collectionId = process.env.APPWRITE_INVOICES_COLLECTION_ID
+
+    const newInvoice = await databases.createDocument(
+      databaseId,
+      collectionId,
+      ID.unique(),
+      {
+        invoiceNumber: body.invoiceNumber || `INV-${Date.now()}`,
+        clientId: body.client?.id || "UNKNOWN",
+        amount: calculations.finalTotal,
+        currency: body.currency || "PHP",
+        status: body.status || "draft",
+        description: body.description || "",
+        dueDate: body.dueDate || new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(), // default 30 days
+        items: JSON.stringify(body.items), // save items as JSON string (fits size 10000)
+        pdfUrl: fileInfo.fileUrl
+      }
+    )
+
+    log("Invoice document created:", newInvoice.$id)
+
+    // Final response
     log("Invoice function completed successfully")
-    return res.json({ success: true, file: fileInfo })
+    return res.json({
+      success: true,
+      file: fileInfo,
+      invoice: newInvoice
+    })
   } catch (err) {
     error("Error in invoice function:", err)
     return res.json({ success: false, error: err.message, details: err.stack })
