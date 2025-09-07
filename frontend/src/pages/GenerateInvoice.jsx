@@ -416,34 +416,28 @@ const GenerateInvoice = () => {
         invoiceNumber: `INV-${Date.now()}`, // unique invoice number
       }
 
-      const response = await functions.createExecution(config.functionsId.generateInvoice, JSON.stringify(invoiceData))
+      const response = await functions.createExecution(
+        config.functionsId.generateInvoice,
+        JSON.stringify(invoiceData)
+      )
 
       const result = response.responseBody ? JSON.parse(response.responseBody) : {}
 
       console.log("Execution object:", response)
       console.log("Invoice Function Output:", result)
 
-      if (result.success && result.pdfBase64) {
-        setGeneratedInvoice({ ...result, currency: data.currency, finalTotal: totals.finalTotal })
+      if (result.success && result.file) {
+        setGeneratedInvoice({
+          ...result,
+          currency: data.currency,
+          finalTotal: totals.finalTotal,
+        })
 
-        // Convert base64 → Blob → download
-        const byteCharacters = atob(result.pdfBase64)
-        const byteNumbers = new Array(byteCharacters.length)
-        for (let i = 0; i < byteCharacters.length; i++) {
-          byteNumbers[i] = byteCharacters.charCodeAt(i)
-        }
-        const byteArray = new Uint8Array(byteNumbers)
-        const blob = new Blob([byteArray], { type: "application/pdf" })
+        // ✅ Open invoice PDF in a new tab
+        const { fileUrl } = result.file
+        window.open(fileUrl, "_blank")
 
-        const link = document.createElement("a")
-        link.href = URL.createObjectURL(blob)
-        link.download = `Invoice-${result.invoiceNumber}.pdf`
-        document.body.appendChild(link)
-        link.click()
-        document.body.removeChild(link)
-        URL.revokeObjectURL(link.href)
-
-        toast.success("Invoice generated and downloaded successfully!")
+        toast.success("Invoice generated and opened in a new tab!")
         reset()
       } else {
         toast.error(result.error || "Failed to generate invoice")
@@ -457,26 +451,14 @@ const GenerateInvoice = () => {
   }
 
   const downloadAgain = () => {
-    if (generatedInvoice?.pdfBase64) {
-      const byteCharacters = atob(generatedInvoice.pdfBase64)
-      const byteNumbers = new Array(byteCharacters.length)
-      for (let i = 0; i < byteCharacters.length; i++) {
-        byteNumbers[i] = byteCharacters.charCodeAt(i)
-      }
-      const byteArray = new Uint8Array(byteNumbers)
-      const blob = new Blob([byteArray], { type: "application/pdf" })
-
-      const link = document.createElement("a")
-      link.href = URL.createObjectURL(blob)
-      link.download = `Invoice-${generatedInvoice.invoiceNumber}.pdf`
-      document.body.appendChild(link)
-      link.click()
-      document.body.removeChild(link)
-      URL.revokeObjectURL(link.href)
-
-      toast.success("PDF downloaded again!")
+    if (generatedInvoice?.file?.fileUrl) {
+      const { fileUrl } = generatedInvoice.file
+      window.open(fileUrl, "_blank")
+      toast.success("Invoice opened again in a new tab!")
     }
   }
+
+
 
   const loadSampleData = () => {
     reset({
