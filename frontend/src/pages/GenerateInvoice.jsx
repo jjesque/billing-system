@@ -3,8 +3,25 @@
 import { useState, useEffect } from "react"
 import { useForm, useFieldArray } from "react-hook-form"
 import { functions, config } from "../lib/appwrite"
-import { Plus, Trash2, Download, FileText, User, Mail, MapPin, Hash, Calendar, DollarSign, FileCheck, Sparkles, Upload, FileSpreadsheet } from "lucide-react"
+import {
+  Plus,
+  Trash2,
+  Download,
+  FileText,
+  User,
+  Mail,
+  MapPin,
+  Hash,
+  Calendar,
+  DollarSign,
+  FileCheck,
+  Sparkles,
+  Upload,
+  FileSpreadsheet,
+} from "lucide-react"
 import toast from "react-hot-toast"
+
+import "../style/GenerateInvoice.css"
 
 const GenerateInvoice = () => {
   const [generating, setGenerating] = useState(false)
@@ -90,7 +107,7 @@ const GenerateInvoice = () => {
       EUR: "€",
       GBP: "£",
       CAD: "C$",
-      PHP: "₱"
+      PHP: "₱",
     }
     return symbols[currency] || "$"
   }
@@ -100,7 +117,7 @@ const GenerateInvoice = () => {
     const file = event.target.files[0]
     if (!file) return
 
-    if (!file.name.toLowerCase().endsWith('.csv')) {
+    if (!file.name.toLowerCase().endsWith(".csv")) {
       toast.error("Please upload a CSV file")
       return
     }
@@ -108,8 +125,8 @@ const GenerateInvoice = () => {
     setUploading(true)
     try {
       const text = await file.text()
-      const Papa = await import('papaparse')
-      
+      const Papa = await import("papaparse")
+
       Papa.parse(text, {
         header: true,
         skipEmptyLines: true,
@@ -117,7 +134,7 @@ const GenerateInvoice = () => {
         complete: (results) => {
           try {
             const data = results.data
-            
+
             if (data.length === 0) {
               toast.error("CSV file is empty")
               return
@@ -145,25 +162,25 @@ const GenerateInvoice = () => {
             // Extract client info from first row (if available)
             const firstRow = data[0]
             const clientFields = {
-              'client_name': 'name',
-              'clientname': 'name',
-              'name': 'name',
-              'company': 'name',
-              'client_email': 'email',
-              'clientemail': 'email',
-              'email': 'email',
-              'client_address': 'address',
-              'clientaddress': 'address',
-              'address': 'address',
-              'client_tax_id': 'taxId',
-              'clienttaxid': 'taxId',
-              'tax_id': 'taxId',
-              'taxid': 'taxId',
-              'tin': 'taxId'
+              client_name: "name",
+              clientname: "name",
+              name: "name",
+              company: "name",
+              client_email: "email",
+              clientemail: "email",
+              email: "email",
+              client_address: "address",
+              clientaddress: "address",
+              address: "address",
+              client_tax_id: "taxId",
+              clienttaxid: "taxId",
+              tax_id: "taxId",
+              taxid: "taxId",
+              tin: "taxId",
             }
 
             Object.entries(firstRow).forEach(([key, value]) => {
-              const normalizedKey = key.toLowerCase().replace(/[^a-z]/g, '')
+              const normalizedKey = key.toLowerCase().replace(/[^a-z]/g, "")
               const clientField = clientFields[normalizedKey]
               if (clientField && value && value.toString().trim()) {
                 formData.client[clientField] = value.toString().trim()
@@ -172,30 +189,30 @@ const GenerateInvoice = () => {
 
             // Extract invoice-level data
             const invoiceFields = {
-              'currency': 'currency',
-              'due_date': 'dueDate',
-              'duedate': 'dueDate',
-              'notes': 'notes',
-              'project_code': 'projectCode',
-              'projectcode': 'projectCode'
+              currency: "currency",
+              due_date: "dueDate",
+              duedate: "dueDate",
+              notes: "notes",
+              project_code: "projectCode",
+              projectcode: "projectCode",
             }
 
             Object.entries(firstRow).forEach(([key, value]) => {
-              const normalizedKey = key.toLowerCase().replace(/[^a-z]/g, '')
+              const normalizedKey = key.toLowerCase().replace(/[^a-z]/g, "")
               const invoiceField = invoiceFields[normalizedKey]
-              
+
               if (invoiceField && value && value.toString().trim()) {
-                if (invoiceField === 'projectCode') {
+                if (invoiceField === "projectCode") {
                   formData.metadata.projectCode = value.toString().trim()
-                } else if (invoiceField === 'dueDate') {
+                } else if (invoiceField === "dueDate") {
                   // Try to parse the date
                   const dateValue = new Date(value.toString().trim())
                   if (!isNaN(dateValue.getTime())) {
                     formData.dueDate = dateValue.toISOString().split("T")[0]
                   }
-                } else if (invoiceField === 'currency') {
+                } else if (invoiceField === "currency") {
                   const currencyValue = value.toString().trim().toUpperCase()
-                  if (['USD', 'EUR', 'GBP', 'CAD', 'PHP'].includes(currencyValue)) {
+                  if (["USD", "EUR", "GBP", "CAD", "PHP"].includes(currencyValue)) {
                     formData.currency = currencyValue
                   }
                 } else {
@@ -207,59 +224,59 @@ const GenerateInvoice = () => {
             // Extract items
             data.forEach((row) => {
               const itemFields = {
-                'description': 'description',
-                'item_description': 'description',
-                'itemdescription': 'description',
-                'product': 'description',
-                'service': 'description',
-                'qty': 'qty',
-                'quantity': 'qty',
-                'amount': 'qty',
-                'unit_price': 'unitPrice',
-                'unitprice': 'unitPrice',
-                'price': 'unitPrice',
-                'rate': 'unitPrice',
-                'tax_category': 'taxCategory',
-                'taxcategory': 'taxCategory',
-                'tax': 'taxCategory',
-                'vat': 'taxCategory'
+                description: "description",
+                item_description: "description",
+                itemdescription: "description",
+                product: "description",
+                service: "description",
+                qty: "qty",
+                quantity: "qty",
+                amount: "qty",
+                unit_price: "unitPrice",
+                unitprice: "unitPrice",
+                price: "unitPrice",
+                rate: "unitPrice",
+                tax_category: "taxCategory",
+                taxcategory: "taxCategory",
+                tax: "taxCategory",
+                vat: "taxCategory",
               }
 
               const item = {
                 description: "",
                 qty: 1,
                 unitPrice: 0,
-                taxCategory: "standard"
+                taxCategory: "standard",
               }
 
               let hasValidItem = false
 
               Object.entries(row).forEach(([key, value]) => {
-                const normalizedKey = key.toLowerCase().replace(/[^a-z]/g, '')
+                const normalizedKey = key.toLowerCase().replace(/[^a-z]/g, "")
                 const itemField = itemFields[normalizedKey]
-                
+
                 if (itemField && value && value.toString().trim()) {
-                  if (itemField === 'description') {
+                  if (itemField === "description") {
                     item.description = value.toString().trim()
                     hasValidItem = true
-                  } else if (itemField === 'qty') {
-                    const qtyValue = parseFloat(value.toString().trim())
+                  } else if (itemField === "qty") {
+                    const qtyValue = Number.parseFloat(value.toString().trim())
                     if (!isNaN(qtyValue) && qtyValue > 0) {
                       item.qty = qtyValue
                     }
-                  } else if (itemField === 'unitPrice') {
-                    const priceValue = parseFloat(value.toString().trim())
+                  } else if (itemField === "unitPrice") {
+                    const priceValue = Number.parseFloat(value.toString().trim())
                     if (!isNaN(priceValue) && priceValue >= 0) {
                       item.unitPrice = priceValue
                     }
-                  } else if (itemField === 'taxCategory') {
+                  } else if (itemField === "taxCategory") {
                     const taxValue = value.toString().trim().toLowerCase()
-                    if (taxValue.includes('standard') || taxValue.includes('21')) {
-                      item.taxCategory = 'standard'
-                    } else if (taxValue.includes('reduced') || taxValue.includes('9')) {
-                      item.taxCategory = 'reduced'
-                    } else if (taxValue.includes('zero') || taxValue.includes('0')) {
-                      item.taxCategory = 'zero'
+                    if (taxValue.includes("standard") || taxValue.includes("21")) {
+                      item.taxCategory = "standard"
+                    } else if (taxValue.includes("reduced") || taxValue.includes("9")) {
+                      item.taxCategory = "reduced"
+                    } else if (taxValue.includes("zero") || taxValue.includes("0")) {
+                      item.taxCategory = "zero"
                     }
                   }
                 }
@@ -273,21 +290,25 @@ const GenerateInvoice = () => {
             // Extract markups and discounts (looking for specific patterns)
             data.forEach((row) => {
               Object.entries(row).forEach(([key, value]) => {
-                const normalizedKey = key.toLowerCase().replace(/[^a-z]/g, '')
-                const numValue = parseFloat(value?.toString().trim() || "0")
-                
+                const normalizedKey = key.toLowerCase().replace(/[^a-z]/g, "")
+                const numValue = Number.parseFloat(value?.toString().trim() || "0")
+
                 if (!isNaN(numValue) && numValue > 0) {
-                  if (normalizedKey.includes('markup') || normalizedKey.includes('additionalcharge') || normalizedKey.includes('surcharge')) {
-                    const isPercentage = value.toString().includes('%') || normalizedKey.includes('percentage')
+                  if (
+                    normalizedKey.includes("markup") ||
+                    normalizedKey.includes("additionalcharge") ||
+                    normalizedKey.includes("surcharge")
+                  ) {
+                    const isPercentage = value.toString().includes("%") || normalizedKey.includes("percentage")
                     formData.markups.push({
                       type: isPercentage ? "percentage" : "amount",
-                      value: numValue
+                      value: numValue,
                     })
-                  } else if (normalizedKey.includes('discount')) {
-                    const isPercentage = value.toString().includes('%') || normalizedKey.includes('percentage')
+                  } else if (normalizedKey.includes("discount")) {
+                    const isPercentage = value.toString().includes("%") || normalizedKey.includes("percentage")
                     formData.discounts.push({
                       type: isPercentage ? "percentage" : "amount",
-                      value: numValue
+                      value: numValue,
                     })
                   }
                 }
@@ -296,14 +317,17 @@ const GenerateInvoice = () => {
 
             // If no items were found, show an error
             if (formData.items.length === 0) {
-              toast.error("No valid items found in CSV. Please ensure you have columns like 'description', 'qty', 'unit_price'")
+              toast.error(
+                "No valid items found in CSV. Please ensure you have columns like 'description', 'qty', 'unit_price'",
+              )
               return
             }
 
             // Reset form with parsed data
             reset(formData)
-            toast.success(`CSV uploaded successfully! Found ${formData.items.length} item(s)${formData.client.name ? ` for ${formData.client.name}` : ''}`)
-            
+            toast.success(
+              `CSV uploaded successfully! Found ${formData.items.length} item(s)${formData.client.name ? ` for ${formData.client.name}` : ""}`,
+            )
           } catch (error) {
             console.error("Error parsing CSV:", error)
             toast.error("Error parsing CSV file. Please check the format.")
@@ -312,16 +336,15 @@ const GenerateInvoice = () => {
         error: (error) => {
           console.error("Papa Parse error:", error)
           toast.error("Error reading CSV file")
-        }
+        },
       })
-      
     } catch (error) {
       console.error("File reading error:", error)
       toast.error("Error reading file")
     } finally {
       setUploading(false)
       // Reset the file input
-      event.target.value = ''
+      event.target.value = ""
     }
   }
 
@@ -381,35 +404,61 @@ const GenerateInvoice = () => {
 
   const totals = calculatePreviewTotals()
 
-const onSubmit = async (data) => {
-  setGenerating(true)
-  try {
-    const totals = calculatePreviewTotals()
+  const onSubmit = async (data) => {
+    setGenerating(true)
+    try {
+      const totals = calculatePreviewTotals()
 
-    const invoiceData = {
-      ...data,
-      total: totals.finalTotal,
-      currency: data.currency,
-      invoiceNumber: `INV-${Date.now()}`, // unique invoice number
+      const invoiceData = {
+        ...data,
+        total: totals.finalTotal,
+        currency: data.currency,
+        invoiceNumber: `INV-${Date.now()}`, // unique invoice number
+      }
+
+      const response = await functions.createExecution(config.functionsId.generateInvoice, JSON.stringify(invoiceData))
+
+      const result = response.responseBody ? JSON.parse(response.responseBody) : {}
+
+      console.log("Execution object:", response)
+      console.log("Invoice Function Output:", result)
+
+      if (result.success && result.pdfBase64) {
+        setGeneratedInvoice({ ...result, currency: data.currency, finalTotal: totals.finalTotal })
+
+        // Convert base64 → Blob → download
+        const byteCharacters = atob(result.pdfBase64)
+        const byteNumbers = new Array(byteCharacters.length)
+        for (let i = 0; i < byteCharacters.length; i++) {
+          byteNumbers[i] = byteCharacters.charCodeAt(i)
+        }
+        const byteArray = new Uint8Array(byteNumbers)
+        const blob = new Blob([byteArray], { type: "application/pdf" })
+
+        const link = document.createElement("a")
+        link.href = URL.createObjectURL(blob)
+        link.download = `Invoice-${result.invoiceNumber}.pdf`
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+        URL.revokeObjectURL(link.href)
+
+        toast.success("Invoice generated and downloaded successfully!")
+        reset()
+      } else {
+        toast.error(result.error || "Failed to generate invoice")
+      }
+    } catch (error) {
+      toast.error("Failed to generate invoice")
+      console.error("Invoice generation error:", error)
+    } finally {
+      setGenerating(false)
     }
+  }
 
-    const response = await functions.createExecution(
-      config.functionsId.generateInvoice,
-      JSON.stringify(invoiceData)
-    )
-
-    const result = response.responseBody
-      ? JSON.parse(response.responseBody)
-      : {}
-
-    console.log("Execution object:", response)
-    console.log("Invoice Function Output:", result)
-
-    if (result.success && result.pdfBase64) {
-      setGeneratedInvoice({ ...result, currency: data.currency, finalTotal: totals.finalTotal })
-
-      // Convert base64 → Blob → download
-      const byteCharacters = atob(result.pdfBase64)
+  const downloadAgain = () => {
+    if (generatedInvoice?.pdfBase64) {
+      const byteCharacters = atob(generatedInvoice.pdfBase64)
       const byteNumbers = new Array(byteCharacters.length)
       for (let i = 0; i < byteCharacters.length; i++) {
         byteNumbers[i] = byteCharacters.charCodeAt(i)
@@ -419,48 +468,15 @@ const onSubmit = async (data) => {
 
       const link = document.createElement("a")
       link.href = URL.createObjectURL(blob)
-      link.download = `Invoice-${result.invoiceNumber}.pdf`
+      link.download = `Invoice-${generatedInvoice.invoiceNumber}.pdf`
       document.body.appendChild(link)
       link.click()
       document.body.removeChild(link)
       URL.revokeObjectURL(link.href)
 
-      toast.success("Invoice generated and downloaded successfully!")
-      reset()
-    } else {
-      toast.error(result.error || "Failed to generate invoice")
+      toast.success("PDF downloaded again!")
     }
-  } catch (error) {
-    toast.error("Failed to generate invoice")
-    console.error("Invoice generation error:", error)
-  } finally {
-    setGenerating(false)
   }
-}
-
-const downloadAgain = () => {
-  if (generatedInvoice?.pdfBase64) {
-    const byteCharacters = atob(generatedInvoice.pdfBase64)
-    const byteNumbers = new Array(byteCharacters.length)
-    for (let i = 0; i < byteCharacters.length; i++) {
-      byteNumbers[i] = byteCharacters.charCodeAt(i)
-    }
-    const byteArray = new Uint8Array(byteNumbers)
-    const blob = new Blob([byteArray], { type: "application/pdf" })
-
-    const link = document.createElement("a")
-    link.href = URL.createObjectURL(blob)
-    link.download = `Invoice-${generatedInvoice.invoiceNumber}.pdf`
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
-    URL.revokeObjectURL(link.href)
-
-    toast.success("PDF downloaded again!")
-  }
-}
-
-
 
   const loadSampleData = () => {
     reset({
@@ -509,7 +525,7 @@ const downloadAgain = () => {
   // Function to format large numbers with proper abbreviations
   const formatAmount = (amount, currency) => {
     const symbol = getCurrencySymbol(currency)
-    
+
     if (amount >= 1000000) {
       return `${symbol}${(amount / 1000000).toFixed(1)}M`
     } else if (amount >= 1000) {
@@ -519,27 +535,21 @@ const downloadAgain = () => {
   }
 
   return (
-    <div className={`min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 transition-all duration-1000 ease-out ${
-      isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
-    }`}>
+    <div className={`generate-invoice-container ${isLoaded ? "loaded" : "loading"}`}>
       <div className="max-w-7xl mx-auto px-4 py-8">
         {/* Modern Header */}
-        <div className={`text-center mb-12 transition-all duration-1000 ease-out delay-200 ${
-          isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
-        }`}>
+        <div className={`text-center mb-12 header-section ${isLoaded ? "loaded" : "loading"}`}>
           <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl mb-4 shadow-lg">
             <FileCheck className="h-8 w-8 text-white" />
           </div>
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-gray-900 via-blue-900 to-indigo-900 bg-clip-text text-transparent mb-2">
-            Invoice Generator
-          </h1>
+          <h1 className="text-4xl font-bold gradient-text-primary mb-2">Invoice Generator</h1>
           <p className="text-xl text-gray-600 mb-6">Create professional invoices in seconds</p>
-          
+
           {/* Action Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <button 
-              onClick={loadSampleData} 
-              className="inline-flex items-center px-6 py-3 bg-white text-gray-700 rounded-xl border border-gray-200 hover:border-blue-300 hover:shadow-lg transition-all duration-200 font-medium"
+            <button
+              onClick={loadSampleData}
+              className="inline-flex items-center px-6 py-3 bg-white text-gray-700 rounded-xl border border-gray-200 hover:border-blue-300 hover:shadow-lg button-hover font-medium"
             >
               <Sparkles className="h-5 w-5 mr-2 text-blue-600" />
               Try Sample Data
@@ -554,13 +564,13 @@ const downloadAgain = () => {
                 className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                 disabled={uploading}
               />
-              <button 
-                className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-emerald-600 to-green-600 text-white rounded-xl hover:from-emerald-700 hover:to-green-700 transition-all duration-200 font-medium shadow-lg hover:shadow-xl disabled:opacity-50"
+              <button
+                className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-emerald-600 to-green-600 text-white rounded-xl hover:from-emerald-700 hover:to-green-700 button-hover font-medium shadow-lg hover:shadow-xl disabled:opacity-50"
                 disabled={uploading}
               >
                 {uploading ? (
                   <>
-                    <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent mr-2"></div>
+                    <div className="loading-spinner rounded-full h-5 w-5 border-2 border-white border-t-transparent mr-2"></div>
                     Processing CSV...
                   </>
                 ) : (
@@ -581,10 +591,18 @@ const downloadAgain = () => {
                 <h4 className="font-medium text-blue-900 mb-1">CSV Format Guide</h4>
                 <p className="text-sm text-blue-700 mb-2">Your CSV can include these columns (case-insensitive):</p>
                 <div className="text-xs text-blue-600 space-y-1">
-                  <p><strong>Client:</strong> client_name, email, address, tax_id</p>
-                  <p><strong>Items:</strong> description, qty, unit_price, tax_category</p>
-                  <p><strong>Invoice:</strong> currency, due_date, notes, project_code</p>
-                  <p><strong>Adjustments:</strong> markup, discount (with % symbol for percentages)</p>
+                  <p>
+                    <strong>Client:</strong> client_name, email, address, tax_id
+                  </p>
+                  <p>
+                    <strong>Items:</strong> description, qty, unit_price, tax_category
+                  </p>
+                  <p>
+                    <strong>Invoice:</strong> currency, due_date, notes, project_code
+                  </p>
+                  <p>
+                    <strong>Adjustments:</strong> markup, discount (with % symbol for percentages)
+                  </p>
                 </div>
               </div>
             </div>
@@ -593,9 +611,9 @@ const downloadAgain = () => {
 
         {/* Success Banner */}
         {generatedInvoice && (
-          <div className={`mb-8 p-6 bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-2xl shadow-sm transition-all duration-1000 ease-out ${
-            isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
-          }`}>
+          <div
+            className={`mb-8 p-6 bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-2xl shadow-sm success-banner ${isLoaded ? "loaded" : "loading"}`}
+          >
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-4">
                 <div className="flex-shrink-0">
@@ -607,13 +625,17 @@ const downloadAgain = () => {
                   <h3 className="text-xl font-semibold text-green-900 mb-1">Invoice Created Successfully!</h3>
                   <p className="text-green-700">
                     Invoice <span className="font-medium">#{generatedInvoice.invoiceNumber}</span> for{" "}
-                    <span className="font-medium">{getCurrencySymbol(generatedInvoice.currency)}{generatedInvoice.finalTotal.toFixed(2)}</span> has been downloaded.
+                    <span className="font-medium">
+                      {getCurrencySymbol(generatedInvoice.currency)}
+                      {generatedInvoice.finalTotal.toFixed(2)}
+                    </span>{" "}
+                    has been downloaded.
                   </p>
                 </div>
               </div>
               <button
                 onClick={downloadAgain}
-                className="px-6 py-3 bg-white text-green-700 rounded-xl border border-green-200 hover:border-green-300 hover:shadow-md transition-all duration-200 font-medium"
+                className="px-6 py-3 bg-white text-green-700 rounded-xl border border-green-200 hover:border-green-300 hover:shadow-md button-hover font-medium"
               >
                 <Download className="h-4 w-4 mr-2 inline" />
                 Download Again
@@ -626,9 +648,9 @@ const downloadAgain = () => {
           {/* Main Form Area */}
           <div className="xl:col-span-3 space-y-8">
             {/* Client Information Card */}
-            <div className={`bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden transition-all duration-1000 ease-out delay-300 ${
-              isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
-            }`}>
+            <div
+              className={`bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden client-card ${isLoaded ? "loaded" : "loading"}`}
+            >
               <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-4">
                 <div className="flex items-center space-x-3">
                   <User className="h-6 w-6 text-white" />
@@ -649,7 +671,7 @@ const downloadAgain = () => {
                     />
                     {errors.client?.name && <p className="text-sm text-red-600 mt-1">{errors.client.name.message}</p>}
                   </div>
-                  
+
                   <div className="space-y-2">
                     <label className="flex items-center text-sm font-medium text-gray-700 mb-2">
                       <Mail className="h-4 w-4 mr-2 text-gray-500" />
@@ -698,9 +720,9 @@ const downloadAgain = () => {
             </div>
 
             {/* Invoice Items Card */}
-            <div className={`bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden transition-all duration-1000 ease-out delay-400 ${
-              isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
-            }`}>
+            <div
+              className={`bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden items-card ${isLoaded ? "loaded" : "loading"}`}
+            >
               <div className="bg-gradient-to-r from-purple-600 to-pink-600 px-6 py-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-3">
@@ -709,12 +731,14 @@ const downloadAgain = () => {
                   </div>
                   <button
                     type="button"
-                    onClick={() => appendItem({
-                      description: "",
-                      qty: 1,
-                      unitPrice: 0,
-                      taxCategory: "standard",
-                    })}
+                    onClick={() =>
+                      appendItem({
+                        description: "",
+                        qty: 1,
+                        unitPrice: 0,
+                        taxCategory: "standard",
+                      })
+                    }
                     className="px-4 py-2 bg-white/20 text-white rounded-lg hover:bg-white/30 transition-colors duration-200 flex items-center space-x-2"
                   >
                     <Plus className="h-4 w-4" />
@@ -738,7 +762,7 @@ const downloadAgain = () => {
                             <p className="text-sm text-red-600 mt-1">{errors.items[index].description.message}</p>
                           )}
                         </div>
-                        
+
                         <div className="md:col-span-2">
                           <label className="text-sm font-medium text-gray-700 mb-2 block">Quantity *</label>
                           <input
@@ -777,8 +801,8 @@ const downloadAgain = () => {
 
                         <div className="md:col-span-2">
                           <label className="text-sm font-medium text-gray-700 mb-2 block">Tax Rate</label>
-                          <select 
-                            {...register(`items.${index}.taxCategory`)} 
+                          <select
+                            {...register(`items.${index}.taxCategory`)}
                             className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
                           >
                             <option value="standard">Standard (21%)</option>
@@ -807,9 +831,9 @@ const downloadAgain = () => {
             </div>
 
             {/* Adjustments Row */}
-            <div className={`grid grid-cols-1 lg:grid-cols-2 gap-8 transition-all duration-1000 ease-out delay-500 ${
-              isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
-            }`}>
+            <div
+              className={`grid grid-cols-1 lg:grid-cols-2 gap-8 adjustments-section ${isLoaded ? "loaded" : "loading"}`}
+            >
               {/* Markups */}
               <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
                 <div className="bg-gradient-to-r from-green-600 to-emerald-600 px-6 py-4">
@@ -831,7 +855,10 @@ const downloadAgain = () => {
                     ) : (
                       markupFields.map((field, index) => (
                         <div key={field.id} className="flex items-center space-x-3">
-                          <select {...register(`markups.${index}.type`)} className="px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                          <select
+                            {...register(`markups.${index}.type`)}
+                            className="px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                          >
                             <option value="percentage">Percentage (%)</option>
                             <option value="amount">Fixed Amount</option>
                           </select>
@@ -877,7 +904,10 @@ const downloadAgain = () => {
                     ) : (
                       discountFields.map((field, index) => (
                         <div key={field.id} className="flex items-center space-x-3">
-                          <select {...register(`discounts.${index}.type`)} className="px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent">
+                          <select
+                            {...register(`discounts.${index}.type`)}
+                            className="px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                          >
                             <option value="percentage">Percentage (%)</option>
                             <option value="amount">Fixed Amount</option>
                           </select>
@@ -904,9 +934,9 @@ const downloadAgain = () => {
             </div>
 
             {/* Additional Details */}
-            <div className={`bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden transition-all duration-1000 ease-out delay-600 ${
-              isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
-            }`}>
+            <div
+              className={`bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden details-card ${isLoaded ? "loaded" : "loading"}`}
+            >
               <div className="bg-gradient-to-r from-indigo-600 to-purple-600 px-6 py-4">
                 <div className="flex items-center space-x-3">
                   <Calendar className="h-6 w-6 text-white" />
@@ -920,8 +950,8 @@ const downloadAgain = () => {
                       <DollarSign className="h-4 w-4 mr-2 text-gray-500" />
                       Currency *
                     </label>
-                    <select 
-                      {...register("currency", { required: "Currency is required" })} 
+                    <select
+                      {...register("currency", { required: "Currency is required" })}
                       className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200"
                     >
                       <option value="USD">🇺🇸 USD - US Dollar</option>
@@ -938,10 +968,10 @@ const downloadAgain = () => {
                       <Calendar className="h-4 w-4 mr-2 text-gray-500" />
                       Due Date *
                     </label>
-                    <input 
-                      {...register("dueDate", { required: "Due date is required" })} 
-                      type="date" 
-                      className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200" 
+                    <input
+                      {...register("dueDate", { required: "Due date is required" })}
+                      type="date"
+                      className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200"
                     />
                     {errors.dueDate && <p className="text-sm text-red-600 mt-1">{errors.dueDate.message}</p>}
                   </div>
@@ -963,10 +993,10 @@ const downloadAgain = () => {
                       <FileText className="h-4 w-4 mr-2 text-gray-500" />
                       Notes & Terms
                     </label>
-                    <textarea 
-                      {...register("notes")} 
-                      className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 resize-none" 
-                      rows={3} 
+                    <textarea
+                      {...register("notes")}
+                      className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 resize-none"
+                      rows={3}
                       placeholder="Payment terms, thank you message, or any additional notes"
                     />
                   </div>
@@ -977,21 +1007,20 @@ const downloadAgain = () => {
 
           {/* Invoice Preview Sidebar */}
           <div className="xl:col-span-1">
-            <div className={`sticky top-8 transition-all duration-1000 ease-out delay-700 ${
-              isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
-            }`}>
+            <div className={`sticky top-8 preview-sidebar ${isLoaded ? "loaded" : "loading"}`}>
               <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
                 <div className="bg-gradient-to-r from-gray-900 via-blue-900 to-indigo-900 px-6 py-6">
                   <h3 className="text-xl font-semibold text-white mb-2">Invoice Preview</h3>
                   <p className="text-blue-100 text-sm">Live calculation</p>
                 </div>
-                
+
                 <div className="p-6">
                   <div className="space-y-4">
                     <div className="flex justify-between items-center py-2 border-b border-gray-100">
                       <span className="text-gray-600 font-medium">Subtotal</span>
                       <span className="font-semibold text-gray-900 text-right break-words">
-                        {getCurrencySymbol(watchedCurrency)}{totals.subtotal.toFixed(2)}
+                        {getCurrencySymbol(watchedCurrency)}
+                        {totals.subtotal.toFixed(2)}
                       </span>
                     </div>
 
@@ -999,7 +1028,8 @@ const downloadAgain = () => {
                       <div className="flex justify-between items-center py-2 border-b border-gray-100">
                         <span className="text-gray-600 font-medium">Additional Charges</span>
                         <span className="font-semibold text-green-600 text-right break-words">
-                          +{getCurrencySymbol(watchedCurrency)}{totals.markupTotal.toFixed(2)}
+                          +{getCurrencySymbol(watchedCurrency)}
+                          {totals.markupTotal.toFixed(2)}
                         </span>
                       </div>
                     )}
@@ -1008,7 +1038,8 @@ const downloadAgain = () => {
                       <div className="flex justify-between items-center py-2 border-b border-gray-100">
                         <span className="text-gray-600 font-medium">Discount</span>
                         <span className="font-semibold text-red-600 text-right break-words">
-                          -{getCurrencySymbol(watchedCurrency)}{totals.discountTotal.toFixed(2)}
+                          -{getCurrencySymbol(watchedCurrency)}
+                          {totals.discountTotal.toFixed(2)}
                         </span>
                       </div>
                     )}
@@ -1016,43 +1047,47 @@ const downloadAgain = () => {
                     <div className="flex justify-between items-center py-2 border-b border-gray-200">
                       <span className="text-gray-600 font-medium">Tax</span>
                       <span className="font-semibold text-gray-900 text-right break-words">
-                        {getCurrencySymbol(watchedCurrency)}{totals.totalTax.toFixed(2)}
+                        {getCurrencySymbol(watchedCurrency)}
+                        {totals.totalTax.toFixed(2)}
                       </span>
                     </div>
 
                     <div className="flex flex-col bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl px-4 py-4 mt-4">
                       <span className="text-lg font-bold text-gray-900 mb-2">Total Amount</span>
                       <div className="flex items-baseline">
-                        <span 
-                          className={`font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent break-all leading-tight ${
-                            totals.finalTotal >= 100000 ? 'text-xl' : 
-                            totals.finalTotal >= 10000 ? 'text-2xl' : 'text-2xl'
+                        <span
+                          className={`font-bold gradient-text-total break-all leading-tight ${
+                            totals.finalTotal >= 100000
+                              ? "amount-text-xl"
+                              : totals.finalTotal >= 10000
+                                ? "amount-text-2xl"
+                                : "amount-text-2xl"
                           }`}
                           title={`${getCurrencySymbol(watchedCurrency)}${totals.finalTotal.toFixed(2)}`}
                         >
-                          {totals.finalTotal >= 100000 ? 
-                            formatAmount(totals.finalTotal, watchedCurrency) : 
-                            `${getCurrencySymbol(watchedCurrency)}${totals.finalTotal.toFixed(2)}`
-                          }
+                          {totals.finalTotal >= 100000
+                            ? formatAmount(totals.finalTotal, watchedCurrency)
+                            : `${getCurrencySymbol(watchedCurrency)}${totals.finalTotal.toFixed(2)}`}
                         </span>
                       </div>
                       {totals.finalTotal >= 100000 && (
                         <span className="text-xs text-gray-500 mt-1">
-                          Full: {getCurrencySymbol(watchedCurrency)}{totals.finalTotal.toFixed(2)}
+                          Full: {getCurrencySymbol(watchedCurrency)}
+                          {totals.finalTotal.toFixed(2)}
                         </span>
                       )}
                     </div>
                   </div>
 
-                  <button 
-                    type="submit" 
-                    disabled={generating} 
-                    onClick={handleSubmit(onSubmit)} 
-                    className="w-full mt-6 px-6 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl font-semibold text-lg hover:from-blue-700 hover:to-indigo-700 focus:ring-4 focus:ring-blue-200 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg hover:shadow-xl"
+                  <button
+                    type="submit"
+                    disabled={generating}
+                    onClick={handleSubmit(onSubmit)}
+                    className="w-full mt-6 px-6 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl font-semibold text-lg hover:from-blue-700 hover:to-indigo-700 focus:ring-4 focus:ring-blue-200 disabled:opacity-50 disabled:cursor-not-allowed button-hover shadow-lg hover:shadow-xl"
                   >
                     {generating ? (
                       <div className="flex items-center justify-center">
-                        <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent mr-3"></div>
+                        <div className="loading-spinner rounded-full h-5 w-5 border-2 border-white border-t-transparent mr-3"></div>
                         <span>Generating Invoice...</span>
                       </div>
                     ) : (
@@ -1084,9 +1119,9 @@ const downloadAgain = () => {
               </div>
 
               {/* Quick Tips */}
-              <div className={`mt-6 bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl p-6 border border-amber-200 transition-all duration-1000 ease-out delay-800 ${
-                isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
-              }`}>
+              <div
+                className={`mt-6 bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl p-6 border border-amber-200 tips-section ${isLoaded ? "loaded" : "loading"}`}
+              >
                 <h4 className="font-semibold text-amber-900 mb-3 flex items-center">
                   <Sparkles className="h-5 w-5 mr-2 text-amber-600" />
                   Pro Tips

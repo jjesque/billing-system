@@ -1,0 +1,211 @@
+/* Generate Invoice Page Styles */
+
+/* Main container with gradient background and fade-in animation */
+.generate-invoice-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f8fafc 0%, #dbeafe 50%, #e0e7ff 100%);
+  transition: all 1000ms ease-out;
+}
+
+.generate-invoice-container.loaded {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.generate-invoice-container.loading {
+  opacity: 0;
+  transform: translateY(1rem);
+}
+
+/* Header animations with staggered delays */
+.header-section {
+  transition: all 1000ms ease-out;
+  transition-delay: 200ms;
+}
+
+.header-section.loaded {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.header-section.loading {
+  opacity: 0;
+  transform: translateY(1rem);
+}
+
+/* Card animations with progressive delays */
+.client-card {
+  transition: all 1000ms ease-out;
+  transition-delay: 300ms;
+}
+
+.client-card.loaded {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.client-card.loading {
+  opacity: 0;
+  transform: translateY(1rem);
+}
+
+.items-card {
+  transition: all 1000ms ease-out;
+  transition-delay: 400ms;
+}
+
+.items-card.loaded {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.items-card.loading {
+  opacity: 0;
+  transform: translateY(1rem);
+}
+
+.adjustments-section {
+  transition: all 1000ms ease-out;
+  transition-delay: 500ms;
+}
+
+.adjustments-section.loaded {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.adjustments-section.loading {
+  opacity: 0;
+  transform: translateY(1rem);
+}
+
+.details-card {
+  transition: all 1000ms ease-out;
+  transition-delay: 600ms;
+}
+
+.details-card.loaded {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.details-card.loading {
+  opacity: 0;
+  transform: translateY(1rem);
+}
+
+.preview-sidebar {
+  transition: all 1000ms ease-out;
+  transition-delay: 700ms;
+}
+
+.preview-sidebar.loaded {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.preview-sidebar.loading {
+  opacity: 0;
+  transform: translateY(1rem);
+}
+
+.tips-section {
+  transition: all 1000ms ease-out;
+  transition-delay: 800ms;
+}
+
+.tips-section.loaded {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.tips-section.loading {
+  opacity: 0;
+  transform: translateY(1rem);
+}
+
+/* Success banner animation */
+.success-banner {
+  transition: all 1000ms ease-out;
+}
+
+.success-banner.loaded {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.success-banner.loading {
+  opacity: 0;
+  transform: translateY(1rem);
+}
+
+/* Gradient text effects */
+.gradient-text-primary {
+  background: linear-gradient(135deg, #111827 0%, #1e3a8a 50%, #3730a3 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.gradient-text-total {
+  background: linear-gradient(135deg, #2563eb 0%, #3730a3 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Loading spinner animation */
+.loading-spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Responsive text sizing for large amounts */
+.amount-text-xl {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+}
+
+.amount-text-2xl {
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+/* Card hover effects */
+.card-hover {
+  transition: all 200ms ease-in-out;
+}
+
+.card-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Button hover effects */
+.button-hover {
+  transition: all 200ms ease-in-out;
+}
+
+.button-hover:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* Focus ring styles */
+.focus-ring {
+  transition: all 200ms ease-in-out;
+}
+
+.focus-ring:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  border-color: #3b82f6;
+}
