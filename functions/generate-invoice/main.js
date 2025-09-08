@@ -26,22 +26,22 @@ async function generateInvoicePDF(invoiceData) {
       console.log("Invoice data received:", invoiceData)
 
       // Colors
-      const primaryColor = "#2563eb"
+      const primaryColor = "#dddd42ff"
       const grayColor = "#6b7280"
       const lightGrayColor = "#f3f4f6"
 
       // Company Header Section
-      doc.fontSize(28).fillColor(primaryColor).text("Your Company", 50, 50, { width: 300 })
+      doc.fontSize(28).fillColor(primaryColor).text("Elinnov Technologies", 50, 50, { width: 300 })
 
       // Invoice Title (Top Right)
       doc.fontSize(24).fillColor("#1f2937").text("Sales Invoice", pageWidth - 200, 50, { align: "right" })
 
       // Company Details (Left Side)
       let leftY = 85
-      doc.fontSize(10).fillColor("#000000").text("Your Company Name", 50, leftY)
+      doc.fontSize(10).fillColor("#000000").text("Elinnov Technologies", 50, leftY)
       doc.text("VAT REG TIN: 000-000-000-000", 50, (leftY += 12))
-      doc.text("123 Business Street, Business District", 50, (leftY += 12))
-      doc.text("Metro Manila, Philippines 1000", 50, (leftY += 12))
+      doc.text("10-1 One Global Place, 25th Street and 5th Avenue, Bonifacio Global City, Taguig,", 50, (leftY += 12))
+      doc.text("Metro Manila, Philippines 1632", 50, (leftY += 12))
 
       leftY += 20
       doc.text("Phone:", 50, leftY, { continued: true }).text("+63 2 8888 8888", 120, leftY)

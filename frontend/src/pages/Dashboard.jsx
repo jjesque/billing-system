@@ -1,11 +1,14 @@
 import { useQuery } from "@tanstack/react-query"
 import { databases, config } from "../lib/appwrite"
+import { useNavigate } from 'react-router-dom';
 import { Query } from "appwrite"
 import { FileText, DollarSign, Clock, CheckCircle, TrendingUp, AlertCircle, BarChart3, PieChart, Activity, Calendar } from "lucide-react"
 import { format } from "date-fns"
 import "../style/Dashboard.css"
 
 const Dashboard = () => {
+
+  const navigate = useNavigate();
   const {
     data: invoices,
     isLoading,
@@ -383,7 +386,10 @@ const Dashboard = () => {
                 <p className="text-gray-500 mb-6 max-w-sm mx-auto">
                   Get started by creating your first invoice and tracking your business performance.
                 </p>
-                <button className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl font-medium hover:from-blue-700 hover:to-indigo-700 hover:scale-105 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+                <button
+                  className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl font-medium hover:from-blue-700 hover:to-indigo-700 hover:scale-105 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
+                  onClick={() => navigate("/generate")}
+                >
                   <FileText className="h-5 w-5 mr-2" />
                   Create Your First Invoice
                 </button>

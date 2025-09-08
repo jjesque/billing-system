@@ -3,3 +3,4 @@
 "*.log" 
 "dist/" 
 ".DS_Store" 
+.vercel
