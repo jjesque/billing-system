@@ -28,7 +28,7 @@ function App() {
           <Route path="invoices" element={<InvoiceList />} />
           <Route path="invoices/:id" element={<InvoiceViewer />} />
           <Route path="generate" element={<GenerateInvoice />} />
-          <Route path="logs" element={<LogsViewer />} />
+          
           <Route path="settings" element={<Settings />} />
         </Route>
       </Routes>

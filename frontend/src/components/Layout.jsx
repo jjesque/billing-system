@@ -26,7 +26,7 @@ const Layout = () => {
     { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
     { name: "Invoices", href: "/invoices", icon: FileText },
     { name: "Generate", href: "/generate", icon: Plus },
-    { name: "Logs", href: "/logs", icon: Activity },
+    
     { name: "Settings", href: "/settings", icon: Settings },
   ]
 

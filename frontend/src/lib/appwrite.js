@@ -1,4 +1,5 @@
 import { Client, Account, Databases, Storage, Functions } from "appwrite"
+import { set } from "react-hook-form"
 
 const client = new Client()
   .setEndpoint(import.meta.env.VITE_APPWRITE_ENDPOINT || "https://cloud.appwrite.io/v1")
@@ -15,6 +16,7 @@ export const config = {
     invoices: import.meta.env.VITE_APPWRITE_INVOICES_COLLECTION_ID, // 68bd4e85001a32b4372
     clients: import.meta.env.VITE_APPWRITE_CLIENTS_COLLECTION_ID,
     logs: import.meta.env.VITE_APPWRITE_LOGS_COLLECTION_ID,
+    settings: import.meta.env.VITE_APPWRITE_SETTINGS_COLLECTION_ID,
   },
   storageId: import.meta.env.VITE_APPWRITE_STORAGE_BUCKET_ID,
   functionsId: {
