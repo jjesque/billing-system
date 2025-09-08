@@ -19,6 +19,7 @@
   "author": "Developer",
   "license": "MIT",
   "devDependencies": {
+    "@vitejs/plugin-react": "^5.0.2",
     "node-appwrite": "^13.0.0"
   },
   "dependencies": {
